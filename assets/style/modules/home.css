@@ -1,0 +1,44 @@
+body {
+text-align: center;
+}
+
+#title {
+  margin-top: 30px;
+}
+
+#pokemons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 40px auto 60px;
+  gap: 30px;
+  width: 90%;
+}
+
+.pokemon {
+  text-transform: capitalize;
+  color: white;
+  background: #ff6347;
+  border-radius: 0.7rem;
+  padding: 0.8rem 0;
+  max-width: 200px;
+  flex: 1 1 200px;
+  transition: background 0.3s;
+}
+
+.pokemon:hover {
+  background: #bd432d;
+  cursor: pointer;
+}
+
+.pokemon:active {
+  background: #913120;
+}
+
+#poke-img {
+  width: min(300px, 100%);
+}
+
+#poke-id {
+  padding-bottom: 60px;
+}
