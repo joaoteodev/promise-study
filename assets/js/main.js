@@ -30,6 +30,12 @@ function updatePage(page) {
   currentPage = page;
   getPokemonList(apiFetch(page)).then(pokemons => {
     updatePokemonList(pokemons);
+    const listPokemons = document.querySelectorAll(".pokemon");
+    listPokemons.forEach(el => {
+      el.addEventListener("click", () => {
+        apiFetch(urlBase + el.textContent).then(updatePokemon);
+      });
+    });
   });
 }
 
@@ -62,6 +68,12 @@ app.appendChild(buttonNext);
 
 getPokemonList(apiFetch(currentPage)).then(pokemons => {
   updatePokemonList(pokemons);
+  const listPokemons = document.querySelectorAll(".pokemon");
+  listPokemons.forEach(el => {
+    el.addEventListener("click", () => {
+      apiFetch(urlBase + el.textContent).then(updatePokemon);
+    });
+  });
 });
 
 const pokeImg = document.createElement("img");
@@ -76,5 +88,5 @@ app.appendChild(pokeID);
 function updatePokemon(pokemon) {
   pokeName.textContent = pokemon.name.toUpperCase();
   pokeImg.setAttribute("src", pokemon.sprites.other.home.front_default);
-  pokeID.textContent = pokemon.id;
+  pokeID.textContent = "ID: " + pokemon.id;
 }
