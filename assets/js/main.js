@@ -1,45 +1,80 @@
-const url = "https://pokeapi.co/api/v2/pokemon/";
-const pokemon = document.querySelector("#pokemon-name");
-const pokemonsString = document.querySelector("#pokemons");
-const pokeImg = document.querySelector("#poke-img");
-const pokeID = document.querySelector("#poke-id");
-
-let pokemons = "";
-
-const getPokemon = pokemon => {
-  return fetch(url + pokemon)
-    .then(data => {
-      if (data.ok) {
-        return data.json();
-      }
-    })
-    .catch(err => console.log(err));
+const apiFetch = url => {
+  return fetch(url).then(data => data.json());
 };
 
+const getPokemonList = obj => obj.then(pokemons => pokemons.results);
+
+const urlBase = "https://pokeapi.co/api/v2/pokemon/";
+const app = document.getElementById("app");
+let currentPage = urlBase;
+
+const h1 = document.createElement("h1");
+h1.textContent = "Choose your Pokemon";
+app.appendChild(h1);
+
+const divList = document.createElement("div");
+divList.classList.add("pokemon-list");
+app.appendChild(divList);
+
 const pokemonBase = pokemonName => `<div class="pokemon">${pokemonName}</div>`;
-let pokemonsHTML = "";
 
-fetch(url)
-  .then(data => data.json())
-  .then(pokes => {
-    pokes.results.forEach(poke => {
-      pokemonsHTML += pokemonBase(poke.name);
-    });
-
-    pokemonsString.innerHTML = pokemonsHTML;
-    pokemons = document.querySelectorAll(".pokemon");
-  })
-  .then(() => {
-    pokemons.forEach(el => {
-      el.addEventListener("click", () => {
-        const pokeName = el.textContent;
-        pokemon.textContent = pokeName;
-        getPokemon(pokeName.toLowerCase())
-          .then(poke => {
-            pokeImg.setAttribute("src", poke.sprites.other.home.front_default);
-            pokeID.textContent = `ID: ${poke.id}`;
-          })
-          .catch(err => console.log(err));
-      });
-    });
+function updatePokemonList(pokemons) {
+  let htmlBase = "";
+  pokemons.forEach(pokemon => {
+    htmlBase += pokemonBase(pokemon.name);
   });
+  divList.innerHTML = htmlBase;
+}
+
+function updatePage(page) {
+  currentPage = page;
+  getPokemonList(apiFetch(page)).then(pokemons => {
+    updatePokemonList(pokemons);
+  });
+}
+
+function nextPage() {
+  apiFetch(currentPage).then(page => {
+    if (page.next) {
+      updatePage(page.next);
+    }
+  });
+}
+
+function previousPage() {
+  apiFetch(currentPage).then(page => {
+    if (page.previous) {
+      updatePage(page.previous);
+    }
+  });
+}
+
+const buttonNext = document.createElement(`button`);
+buttonNext.textContent = `Next Page`;
+buttonNext.classList.add("button-next");
+buttonNext.addEventListener(`click`, nextPage);
+const buttonprevious = document.createElement(`button`);
+buttonprevious.textContent = `previous Page`;
+buttonprevious.classList.add("button-previous");
+buttonprevious.addEventListener(`click`, previousPage);
+app.appendChild(buttonprevious);
+app.appendChild(buttonNext);
+
+getPokemonList(apiFetch(currentPage)).then(pokemons => {
+  updatePokemonList(pokemons);
+});
+
+const pokeImg = document.createElement("img");
+pokeImg.setAttribute("id", "poke-img");
+const pokeName = document.createElement("h2");
+pokeName.style.borderTop = "1px solid black";
+const pokeID = document.createElement("h3");
+app.appendChild(pokeName);
+app.appendChild(pokeImg);
+app.appendChild(pokeID);
+
+function updatePokemon(pokemon) {
+  pokeName.textContent = pokemon.name.toUpperCase();
+  pokeImg.setAttribute("src", pokemon.sprites.other.home.front_default);
+  pokeID.textContent = pokemon.id;
+}
