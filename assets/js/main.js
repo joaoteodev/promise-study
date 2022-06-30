@@ -17,7 +17,8 @@ const divList = document.createElement("div");
 divList.classList.add("pokemon-list");
 app.appendChild(divList);
 
-const pokemonBase = pokemonName => `<div class="pokemon">${pokemonName}</div>`;
+const pokemonBase = pokemonName =>
+  `<a class="pokemon" href="#poke-id">${pokemonName}</a>`;
 
 function updatePokemonList(pokemons) {
   let htmlBase = "";
@@ -58,6 +59,7 @@ pokeImg.setAttribute("id", "poke-img");
 const pokeName = document.createElement("h2");
 pokeName.style.borderTop = "1px solid black";
 const pokeID = document.createElement("h3");
+pokeID.setAttribute("id", "poke-id");
 app.appendChild(pokeName);
 app.appendChild(pokeImg);
 app.appendChild(pokeID);
